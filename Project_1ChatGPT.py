@@ -9,17 +9,15 @@ url = 'https://content.guardianapis.com/search'
 MY_API = os.environ.get("API_GUARDIAN")
 my_params= {"api-key":MY_API, "q":"chatgpt",  "format":"json", "page":1, "page-size":100}
 
-# input("topic")
 response=requests.get(url,params=my_params).json()
 
 res_dict=json_normalize(response['response']['results'])
 df = pd.DataFrame(res_dict).reset_index(drop=True)
 
-chat_gpt = df.convert_dtypes() #in realtà potrei non doverlo fare. Infatti se uso 'loc' in ogni colonna mi dirà reale type
+chat_gpt = df.convert_dtypes() 
 chat_gpt['webPublicationDate']=pd.to_datetime(chat_gpt['webPublicationDate'],format="%Y-%m-%d")
 chat_gpt['webPublicationDate']=chat_gpt['webPublicationDate'].dt.date
-#ATTENTO: il fatto che chat_gpt['webPublicationDate'].dtype ti dia 'object' non significa che non sia 'datetime'.
-#Infatti se fai: chat_gpt.loc[10,'webPublicationDate'] ti darà 'datetime'. Confermato su stackoverflow
+
 chat_gpt.sort_values('webPublicationDate',ascending=False,inplace=True)
 #NUMBER OF ARTICLES AT DAY
 n_art=chat_gpt.groupby('webPublicationDate')['id'].nunique().reset_index(name='Articles for days')
@@ -139,7 +137,7 @@ plt.show()
 '''--------------NETWORKX----------------------'''
 import networkx as nx
 
-#Creare df_combo(Source-Target)
+#Creating df_combo(Source-Target)
 df_combo=pd.DataFrame.from_dict(series_combo).reset_index()
 df_combo.rename(columns={'level_0':'NodeA','level_1':'NodeB',0:'Values'},inplace=True)
 
@@ -150,8 +148,7 @@ from pyvis.network import Network
 n_degree=dict(G.degree())
 nx.set_node_attributes(G,n_degree,'size')
 plt.rcParams["figure.figsize"]=(15,10)
-# mypos=nx.kamada_kawai_layout(G)
-# nx.draw_networkx(G,arrows=True,pos=mypos)
+
 net = Network(notebook = False, width="1000px", height="700px", bgcolor='#222222', font_color='white')
 net.from_nx(G)
 net.show("Skynet.html")
@@ -181,7 +178,7 @@ centrality = nx.betweenness_centrality(G)
 lpc = nx.community.label_propagation_communities(G)
 community_index = {n: i for i, com in enumerate(lpc) for n in com}
 
-#### draw graph ####
+
 fig, ax = plt.subplots(figsize=(20, 15))
 pos = nx.spring_layout(G)
 node_color = [community_index[n] for n in G]
@@ -242,13 +239,13 @@ pos = nx.spring_layout(g)
 
 nx.draw_networkx_nodes(g,pos=pos,
                        nodelist=ent,
-                       node_color='darkblue',
+                       node_color='lime',
                        node_size=10,
                        alpha=0.5)
 
 nx.draw_networkx_nodes(g,pos=pos,
                        nodelist=sec,
-                       node_color='lightblue',
+                       node_color='darkviolet',
                        node_size=50,
                        alpha=0.5)
 
