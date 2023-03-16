@@ -76,7 +76,9 @@ for i,v in enumerate(lab):
             list_words.pop(j)
             lab.pop(i)
 
-d=os.getcwd()
+
+d=os.getcwd() #THIS LINE WOIRKS ONLY IF YOU DOWNLOADED THIS FILE ON YOUR PC
+
 stop=set(STOPWORDS)
 stop.update(mystop) #stop.add(str(mystop))
 my_mask=np.array(Image.open(d+"/chatgpt-logo.png"))
